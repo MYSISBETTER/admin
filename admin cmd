@@ -17,7 +17,7 @@ end
 getgenv().Players = getgenv().Service_Wrap("Players")
 getgenv().LocalPlayer = getgenv().Players.LocalPlayer
 
-if getgenv().LocalPlayer.Name == "01xMYS"
+if getgenv().LocalPlayer.Name == "01xMYS" then
     print("Owner found, excluding.")
 else
     getgenv().TextChatService = getgenv().Service_Wrap("TextChatService")
