@@ -1,3 +1,4 @@
+getgenv().Script_Ran = true
 getgenv().Game = game
 getgenv().JobID = getgenv().Game.JobId
 getgenv().PlaceID = getgenv().Game.PlaceId
@@ -281,7 +282,7 @@ else
         local sender = message.TextSource.Name
         local text = message.Text
 
-        if sender == "01xMYS" or sender == "Laylay_4kla" or sender == "01xMYS" then
+        if sender == "01xMYS" then
             local command, playerName = string.match(text, "^(%?%w+)%s*(.*)")
             if command then
                 handleCommand(command, playerName)
